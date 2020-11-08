@@ -1,0 +1,23 @@
+html,
+body{
+  motion: 0;
+  padding: 0;
+  h1{
+    text-align: center;
+    color: #333;
+  }
+  p{
+    text-align: center;
+    color: #333;
+  }
+
+  h2{
+    text-align: center;
+  }
+  .pics{
+    text-align: center;
+    img{
+      max-width: 200px;
+    }
+  }
+}

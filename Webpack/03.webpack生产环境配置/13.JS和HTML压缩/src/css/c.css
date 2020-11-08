@@ -1,0 +1,20 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.box2 {
+  display: flex;
+  transform: rotate(-3deg);
+}
+
+p {
+  background-color: #fff;
+}
