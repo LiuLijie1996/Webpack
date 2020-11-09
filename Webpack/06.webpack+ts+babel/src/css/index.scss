@@ -1,0 +1,45 @@
+@import "./commont.scss";
+
+.box{
+  width: 100px;
+  height: 100px;
+  background-color: pink;
+  span{
+    display: inline-block;
+    padding: 20px;
+  }
+}
+
+.pic{
+   width: 100px;
+   height: 100px;
+   img{
+      width: 100px;
+      height: 100px;
+   }
+}
+
+.picBgi{
+  width: 100px;
+  height: 100px;
+  background-image: url("../images/01.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.postcss{
+  display: flex;
+  justify-content: space-between;
+  width: 100px;
+  height: 100px;
+  span{
+    flex: 1;
+    height: 100%;
+    background-color: pink;
+  }
+  span:nth-child(2) {
+    flex: 1;
+    height: 100%;
+    background-color: blueviolet;
+  }
+}
