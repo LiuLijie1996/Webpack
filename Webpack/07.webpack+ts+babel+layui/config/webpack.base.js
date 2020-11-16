@@ -9,21 +9,21 @@ const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 //项目路径
-const viewsPath = path.resolve(__dirname, "../src/views");//模板目录路径
-const scssPath = path.resolve(__dirname, "../src/scss");//scss目录路径
-const tsPath = path.resolve(__dirname, "../src/ts");//ts目录路径
-let viewFiles = fs.readdirSync(viewsPath);//获取模板文件列表
+const viewsPath = path.resolve(__dirname, "../src/views"); //模板目录路径
+const scssPath = path.resolve(__dirname, "../src/scss"); //scss目录路径
+const tsPath = path.resolve(__dirname, "../src/ts"); //ts目录路径
+let viewFiles = fs.readdirSync(viewsPath); //获取模板文件列表
 
-let entry = null;//入口文件
-let templates = null;//模板文件
+let entry = null; //入口文件
+let templates = null; //模板文件
 
 createFile();
 //创建模板文件和入口文件
-function createFile(){
+function createFile() {
     entry = {};
     templates = [];
 
-    viewFiles.forEach(file=>{
+    viewFiles.forEach(file => {
         let fileName = file.split('.html')[0];
         //设置入口文件
         entry[fileName] = "./src/ts/" + fileName + ".ts";
@@ -47,6 +47,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "../build"), //输出地址
         filename: "dist/js/[name].js", //输出后的文件名
+    },
+
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
     },
 
     // loader
