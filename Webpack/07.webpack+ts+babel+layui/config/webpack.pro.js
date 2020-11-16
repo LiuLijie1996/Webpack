@@ -18,8 +18,8 @@ const proConfig = {
         // 拷贝文件
         new CopyWebpackPlugin({
             patterns: [{
-                from: path.resolve(__dirname, '../static'), //打包的静态资源目录地址
-                to: path.resolve(__dirname, "../build/dist"), //打包到build下面的dist
+                from: path.resolve(__dirname, '../static'), //需要打包的静态资源地址
+                to: path.resolve(__dirname, "../build"), //将静态资源打包到build下面
             }]
         }),
     ],

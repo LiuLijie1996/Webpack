@@ -1,5 +1,6 @@
 // 公共配置
 
+const fs = require("fs");
 const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -7,14 +8,40 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
+//项目路径
+const viewsPath = path.resolve(__dirname, "../src/views");//模板目录路径
+const scssPath = path.resolve(__dirname, "../src/scss");//scss目录路径
+const tsPath = path.resolve(__dirname, "../src/ts");//ts目录路径
+let viewFiles = fs.readdirSync(viewsPath);//获取模板文件列表
+
+let entry = null;//入口文件
+let templates = null;//模板文件
+
+createFile();
+//创建模板文件和入口文件
+function createFile(){
+    entry = {};
+    templates = [];
+
+    viewFiles.forEach(file=>{
+        let fileName = file.split('.html')[0];
+        //设置入口文件
+        entry[fileName] = "./src/ts/" + fileName + ".ts";
+        //设置模板文件
+        let htmlTemplate = new HtmlWebpackPlugin({
+            template: "./src/views/" + fileName + ".html", //模板文件地址
+            filename: fileName + ".html", //输出后的html文件名称
+            chunks: [fileName],
+        });
+        templates.push(htmlTemplate);
+    });
+}
+
 module.exports = {
     devtool: "source-map",
 
     // 入口文件
-    entry: {
-        index: "./src/ts/index.ts",
-        newsList: "./src/ts/newsList.ts",
-    },
+    entry: entry,
 
     // 输出
     output: {
@@ -111,17 +138,7 @@ module.exports = {
         new OptimizeCssAssetsPlugin(),
 
         // 模板文件
-        new HtmlWebpackPlugin({
-            template: "./src/views/index.html", //模板文件地址
-            filename: "index.html", //输出后的html文件名称
-            chunks: ['index'],
-        }),
-        // 模板文件
-        new HtmlWebpackPlugin({
-            template: "./src/views/newsList.html", //模板文件地址
-            filename: "newsList.html", //输出后的html文件名称
-            chunks: ['newsList'],
-        }),
+        ...templates,
     ],
 
     optimization: {
@@ -131,4 +148,4 @@ module.exports = {
             minChunks: 1, //要提取的chunk最少被引用1次
         },
     },
-}
+};

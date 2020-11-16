@@ -15,24 +15,25 @@ let devConfig = {
     },
 
     // 本地服务
-    devServer: {
-        contentBase: path.resolve(__dirname, "../build"),
-        compress: true,
-        port: 3000,
-        hot: true,
-        // useLocalIp: true,
-        // watchContentBase: true,
-        // 服务器代理 -->  解决开发环境跨域问题
-        proxy: {
-            "/dist": {
-                target: "http://localhost",
-                // 发送请求时，请求路径重写，将 /api/xxx  -->  /xxx (去掉/layui)
-                pathRewrite: {
-                    "^/dist": "",
-                },
-            }
-        }
-    }
+    // devServer: {
+    //     contentBase: path.resolve(__dirname, "../build"),
+    //     compress: true,
+    //     port: 3000,
+    //     hot: true,
+    //     // useLocalIp: true,
+    //     // watchContentBase: true,
+    //     // 服务器代理 -->  解决开发环境跨域问题
+    //     proxy: {
+    //         "/dist": {
+    //             target: "http://localhost",
+    //             // 发送请求时，请求路径重写，将 /api/xxx  -->  /xxx (去掉/layui)
+    //             pathRewrite: {
+    //                 "^/dist": "",
+    //             },
+    //         }
+    //     },
+    //     open:true,
+    // }
 };
 //合并配置并导出
 module.exports = merge(baseConfig, devConfig);
