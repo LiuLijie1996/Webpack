@@ -1,51 +1,55 @@
-## 安装
+// 公共配置
 
-```html
-npm install babel-loader @babel/core @babel/preset-env webpack --save-dev
-npm install core-js --save-dev
-npm install typescript ts-loader --save-dev
-```
-
-
-
-## 目录结构
-
-```html
-src 目录
-	css
-	iconfont
-	images
-	ts
-
-.babelrc	babel配置文件
-tsconfig.json   ts配置文件
-webpack.config.js   webpack配置文件
-```
-
-
-
-## webpack配置
-
-```js
+const fs = require("fs");
 const path = require("path");
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const entry = require("./entry");//入口文件
+const templates = require("./htmlPlugin");//模板文件
+
+
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
+// //项目路径
+// const viewsPath = path.resolve(__dirname, "../src/views");//模板目录路径
+// const scssPath = path.resolve(__dirname, "../src/scss");//scss目录路径
+// const tsPath = path.resolve(__dirname, "../src/ts");//ts目录路径
+// let viewFiles = fs.readdirSync(viewsPath);//获取模板文件列表
+// createFile();
+// //创建模板文件和入口文件
+// function createFile(){
+//     entry = {};
+//     templates = [];
+
+//     viewFiles.forEach(file=>{
+//         let fileName = file.split('.html')[0];
+//         //设置入口文件
+//         entry[fileName] = "./src/ts/" + fileName + ".ts";
+//         //设置模板文件
+//         let htmlTemplate = new HtmlWebpackPlugin({
+//             template: "./src/views/" + fileName + ".html", //模板文件地址
+//             filename: fileName + ".html", //输出后的html文件名称
+//             chunks: [fileName],
+//         });
+//         templates.push(htmlTemplate);
+//     });
+// }
 
 module.exports = {
-    devtool: "source-map",
+    devtool: "inline-source-map",
 
     // 入口文件
-    entry: {
-        index: "./src/ts/index.ts",
-        newsList: "./src/ts/newsList.ts",
-    },
+    entry: entry,
 
     // 输出
     output: {
-        filename: "dist/js/[name].js",//输出后的文件名
-        path: path.resolve(__dirname, "build"),//输出地址
+        path: path.resolve(__dirname, "../build"), //输出地址
+        filename: "dist/js/[name].js", //输出后的文件名
+    },
+
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
     },
 
     // loader
@@ -134,16 +138,14 @@ module.exports = {
             // 解析其他文件
             {
                 exclude: /\.(html|js|ts|tsx|scss|css|jpg|jpeg|png|gif)$/,
-                use: [
-                    {
-                        loader: "file-loader",
-                        options: {
-                            name: "[name].[ext]",
-                            publicPath: "/dist/iconfont",//公共路径
-                            outputPath: "dist/iconfont",//文件存放目录
-                        }
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        name: "[hash:10].[ext]",
+                        publicPath: "/dist/iconfont", //公共路径
+                        outputPath: "dist/iconfont", //文件存放目录
                     }
-                ],
+                }],
             },
         ]
     },
@@ -152,83 +154,29 @@ module.exports = {
         // 打包前先删除输出目录的所有文件
         new CleanWebpackPlugin(),
 
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            "window.jQuery": "jquery"
+        }),
+
         // 将css单独打包成一个文件
         new MiniCssExtractPlugin({
-            filename: "dist/css/[name].css",//打包后的css文件名称
+            filename: "dist/css/[name].css", //打包后的css文件名称
         }),
 
         // 压缩css代码
         new OptimizeCssAssetsPlugin(),
 
         // 模板文件
-        new HtmlWebpackPlugin({
-            template: "./src/index.html",//模板文件地址
-            filename: "index.html",//输出后的html文件名称
-            chunks: ['index'],
-        }),
-        // 模板文件
-        new HtmlWebpackPlugin({
-            template: "./src/newsList.html",//模板文件地址
-            filename: "newsList.html",//输出后的html文件名称
-            chunks: ['newsList'],
-        }),
+        ...templates,
     ],
 
     optimization: {
         // 代码分割
         splitChunks: {
             chunks: "all",
-            minChunks: 1,//要提取的chunk最少被引用1次
+            minChunks: 1, //要提取的chunk最少被引用1次
         },
     },
-
-    mode: "production",
-}
-```
-
-
-
-## tsconfig.json
-
-```js
-{
-  "compilerOptions": {
-    "target": "es5", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
-    "module": "commonjs", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
-    "lib": [ /* Specify library files to be included in the compilation. */
-      "DOM",
-      "ES2015",
-      "ES2016"
-    ],
-    "outDir": "./build", /* Redirect output structure to the directory. */
-    "rootDir": "./src/ts", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    "strict": true, /* Enable all strict type-checking options. */
-    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-    /* Experimental Options */
-    "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
-    "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
-    /* Advanced Options */
-    "skipLibCheck": true, /* Skip type checking of declaration files. */
-    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
-  }
-}
-```
-
-
-
-## .babelrc
-
-```json
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "useBuiltIns": "usage",
-        "corejs": "3"
-      }
-    ]
-  ]
-}
-```
-
+};
